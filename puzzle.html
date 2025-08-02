@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Puzzle Game</title>
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
+      background:
+        repeating-linear-gradient(0deg, #b8eaff 0 4px, #a0d8ef 4px 8px),
+        repeating-linear-gradient(90deg, #b8eaff 0 4px, #a0d8ef 4px 8px),
+        #b8eaff;
+      font-family: 'Press Start 2P', 'Segoe UI', 'Dancing Script', cursive, sans-serif;
+    }
+    /* Pixel ground */
+    body::after {
+      content: '';
+      position: fixed;
+      left: 0; right: 0; bottom: 0;
+      height: 60px;
+      background:
+        repeating-linear-gradient(90deg, #7c6f57 0 12px, #a89c7c 12px 24px),
+        #7c6f57;
+      box-shadow: 0 -2px 0 #2228;
+      z-index: 1;
+      pointer-events: none;
+    }
+    #main-wrapper {
+      width: 100vw; height: 100vh;
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    #puzzle-board {
+      display: grid;
+      grid-template-columns: repeat(4, 80px);
+      grid-template-rows: repeat(4, 80px);
+      gap: 4px;
+      background: #fffbe7cc;
+      border-radius: 20px;
+      box-shadow: 0 4px 32px #bfa76f33, 0 1.5px 0 #ffe0b2;
+      user-select: none;
+      padding: 18px 18px 24px 18px;
+      border: 3px solid #ffe0b2;
+      position: relative;
+      z-index: 2;
+      animation: popIn 0.8s cubic-bezier(.7,1.7,.5,1);
+    }
+    @keyframes popIn {
+      from { opacity: 0; transform: scale(0.7) translateY(60px); }
+      to { opacity: 1; transform: none; }
+    }
+    .puzzle-piece {
+      width: 80px; height: 80px;
+      background-size: 320px 320px;
+      background-repeat: no-repeat;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px #bfa76f22, 0 0.5px 0 #ffe0b2;
+      cursor: pointer;
+      transition: box-shadow 0.2s, transform 0.18s;
+      border: 2.5px solid #ffe0b2;
+      background-color: #fff;
+      position: relative;
+    }
+    .puzzle-piece:hover {
+      box-shadow: 0 6px 24px #bfa76f44;
+      transform: scale(1.07) rotate(-2deg);
+      z-index: 3;
+    }
+    .puzzle-piece.dragging {
+      opacity: 0.7;
+      box-shadow: 0 8px 32px #bfa76f77;
+      transform: scale(1.12) rotate(2deg);
+      z-index: 4;
+    }
+    #puzzle-message {
+      text-align: center;
+      margin-top: 24px;
+      font-size: 1.4rem;
+      color: #bfa76f;
+      font-family: 'Dancing Script', cursive;
+      letter-spacing: 1px;
+      text-shadow: 0 1px 0 #fffbe7, 0 2px 8px #ffe0b2;
+      min-height: 32px;
+    }
+    #preview-img {
+      position: fixed;
+      top: 24px; right: 32px;
+      width: 120px; height: 120px;
+      border-radius: 8px;
+      box-shadow: 0 2px 16px #2228, 0 0.5px 0 #fff8;
+      border: 3px solid #222;
+      background: #e0e0e0;
+      object-fit: cover;
+      z-index: 10;
+      transition: transform 0.2s;
+      image-rendering: pixelated;
+    }
+    #preview-label {
+      position: fixed;
+      top: 10px; right: 38px;
+      color: #bfa76f;
+      font-size: 1.05rem;
+      font-family: 'Dancing Script', cursive;
+      z-index: 11;
+      text-shadow: 0 1px 0 #fffbe7, 0 2px 8px #ffe0b2;
+    }
+    @media (max-width: 600px) {
+      #puzzle-board { transform: scale(0.7); }
+      #preview-img { width: 70px; height: 70px; top: 10px; right: 10px; }
+      #preview-label { top: 0; right: 16px; font-size: 0.9rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Decorative dino images at bottom corners, hidden by default -->
+  <img id="dino7" src="7-removebg-preview.png" alt="Dino" class="dino-fade" style="position:fixed;left:90px;bottom:60px;width:200px;height:200px;z-index:3;filter:drop-shadow(0 4px 24px #2226);user-select:none;pointer-events:none;display:none;opacity:0;transition:opacity 1.1s cubic-bezier(.7,1.7,.5,1);" draggable="false">
+  <img id="dino8" src="8-removebg-preview.png" alt="Dino" class="dino-fade" style="position:fixed;right:90px;bottom:60px;width:160px;height:160px;z-index:3;filter:drop-shadow(0 4px 24px #2226);user-select:none;pointer-events:none;transform:scaleX(-1);display:none;opacity:0;transition:opacity 1.1s cubic-bezier(.7,1.7,.5,1);" draggable="false">
+  <svg id="grass-svg" width="100vw" height="60" viewBox="0 0 1000 60" style="position:fixed;left:0;right:0;bottom:60px;width:100vw;height:60px;z-index:2;pointer-events:none;">
+    <g>
+      <path d="M0,60 Q10,30 20,60 Q30,40 40,60 Q50,35 60,60 Q70,50 80,60 Q90,30 100,60 Q110,45 120,60 Q130,40 140,60 Q150,30 160,60 Q170,50 180,60 Q190,35 200,60 Q210,45 220,60 Q230,30 240,60 Q250,50 260,60 Q270,40 280,60 Q290,35 300,60 Q310,50 320,60 Q330,30 340,60 Q350,45 360,60 Q370,40 380,60 Q390,30 400,60 Q410,50 420,60 Q430,35 440,60 Q450,45 460,60 Q470,30 480,60 Q490,50 500,60 Q510,40 520,60 Q530,35 540,60 Q550,50 560,60 Q570,30 580,60 Q590,45 600,60 Q610,40 620,60 Q630,30 640,60 Q650,50 660,60 Q670,35 680,60 Q690,45 700,60 Q710,30 720,60 Q730,50 740,60 Q750,40 760,60 Q770,35 780,60 Q790,50 800,60 Q810,30 820,60 Q830,45 840,60 Q850,40 860,60 Q870,30 880,60 Q890,50 900,60 Q910,35 920,60 Q930,45 940,60 Q950,30 960,60 Q970,50 980,60 Q990,40 1000,60" fill="#4caf50"/>
+      <path d="M0,60 Q15,40 30,60 Q45,50 60,60 Q75,35 90,60 Q105,50 120,60 Q135,40 150,60 Q165,30 180,60 Q195,50 210,60 Q225,35 240,60 Q255,45 270,60 Q285,40 300,60 Q315,30 330,60 Q345,50 360,60 Q375,35 390,60 Q405,50 420,60 Q435,40 450,60 Q465,30 480,60 Q495,50 510,60 Q525,35 540,60 Q555,45 570,60 Q585,40 600,60 Q615,30 630,60 Q645,50 660,60 Q675,35 690,60 Q705,50 720,60 Q735,40 750,60 Q765,30 780,60 Q795,50 810,60 Q825,35 840,60 Q855,45 870,60 Q885,40 900,60 Q915,30 930,60 Q945,50 960,60 Q975,35 990,60" fill="#388e3c"/>
+    </g>
+  </svg>
+  <div id="intro-overlay" style="position:fixed;left:0;top:0;width:100vw;height:100vh;z-index:100;background:transparent;display:flex;align-items:center;justify-content:center;">
+    <span id="intro-text" style="font-family:'Press Start 2P',cursive,sans-serif;font-size:2.2rem;color:#fffbe7;text-shadow:0 2px 12px #222,0 1px 0 #bfa76f;font-weight:bold;letter-spacing:2px;opacity:0;transition:opacity 1s;">Welcome To Mini Game</span>
+  </div>
+  <div id="main-wrapper" style="opacity:0;transition:opacity 1s;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+    <div id="puzzle-instruction" style="display:none;position:absolute;top:32px;left:0;width:100vw;text-align:center;font-family:'Press Start 2P',cursive,sans-serif;font-size:1.25rem;color:#1976d2;text-shadow:0 2px 12px #fffbe7,0 1px 0 #bfa76f;font-weight:900;letter-spacing:2px;z-index:20;">Susun puzzle ini menjadi gambar yang utuh</div>
+    <div id="puzzle-board"></div>
+    <div id="puzzle-progress" style="display:block;text-align:center;font-family:'Press Start 2P',cursive,sans-serif;font-size:1.05rem;color:#1976d2;text-shadow:0 1px 0 #fffbe7,0 2px 8px #bfa76f;font-weight:bold;letter-spacing:1px;margin:18px 0 0 0;">0/16</div>
+    <div id="puzzle-message"></div>
+    <div id="puzzle-notif" style="display:none;position:fixed;left:50%;top:80px;transform:translateX(-50%);background:#fffbe7;border-radius:18px;box-shadow:0 8px 32px #bfa76f55,0 0.5px 0 #ffe0b2;border:2.5px solid #ffe0b2;padding:32px 38px 24px 38px;z-index:9999;font-family:'Dancing Script',cursive;font-size:2rem;color:#e75480;text-align:center;animation:popIn 0.7s cubic-bezier(.7,1.7,.5,1);">YEAYYY BERHASILL!!!<br><span style='font-size:1.2rem;color:#a67c3c;'>selamat buss......kita lanjut ke step selanjutnya yaa</span></div>
+    <div id="preview-label">Contoh gambar utuh:</div>
+    <img id="preview-img" src="dino.png" alt="Preview">
+  </div>
+  <script>
+    const imgSrc = 'dino.png';
+    const size = 4; // 4x4 puzzle
+    const board = document.getElementById('puzzle-board');
+    const message = document.getElementById('puzzle-message');
+    let pieces = [];
+    let order = [];
+    function shuffle(array) {
+      for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+    function createPuzzle() {
+      pieces = [];
+      order = [];
+      board.innerHTML = '';
+      for (let row = 0; row < size; row++) {
+        for (let col = 0; col < size; col++) {
+          const idx = row * size + col;
+          pieces.push({row, col, idx});
+          order.push(idx);
+        }
+      }
+      shuffle(order);
+      // Force piece 7 (index 6) to bottom left (row 3, col 0, index 12),
+      // and piece 8 (index 7) to bottom right (row 3, col 3, index 15)
+      // Remove 6 and 7 from order
+      order = order.filter(x => x !== 6 && x !== 7);
+      // Insert 6 at index 12 (bottom left), 7 at index 15 (bottom right)
+      order.splice(12, 0, 6);
+      order.splice(15, 0, 7);
+      for (let i = 0; i < order.length; i++) {
+        const pieceIdx = order[i];
+        const {row, col} = pieces[pieceIdx];
+        const div = document.createElement('div');
+        div.className = 'puzzle-piece';
+        div.style.backgroundImage = `url('${imgSrc}')`;
+        div.style.backgroundPosition = `-${col*80}px -${row*80}px`;
+        div.setAttribute('data-piece', pieceIdx);
+        div.setAttribute('draggable', 'true');
+        div.addEventListener('dragstart', dragStart);
+        div.addEventListener('dragover', dragOver);
+        div.addEventListener('drop', dropPiece);
+        div.addEventListener('dragend', dragEnd);
+        board.appendChild(div);
+      }
+      document.getElementById('puzzle-progress').textContent = '0/16';
+    }
+    let dragged = null;
+    function dragStart(e) {
+      dragged = this;
+      this.classList.add('dragging');
+    }
+    function dragOver(e) {
+      e.preventDefault();
+    }
+    function dropPiece(e) {
+      e.preventDefault();
+      if (dragged && dragged !== this) {
+        // Swap the pieces
+        const tempPiece = this.getAttribute('data-piece');
+        this.setAttribute('data-piece', dragged.getAttribute('data-piece'));
+        dragged.setAttribute('data-piece', tempPiece);
+        // Swap background positions
+        const tempBg = this.style.backgroundPosition;
+        this.style.backgroundPosition = dragged.style.backgroundPosition;
+        dragged.style.backgroundPosition = tempBg;
+        checkWin();
+      }
+    }
+    function dragEnd(e) {
+      this.classList.remove('dragging');
+      dragged = null;
+    }
+    function checkWin() {
+      const piecesArr = Array.from(board.children);
+      let correct = 0;
+      for (let i = 0; i < piecesArr.length; i++) {
+        if (parseInt(piecesArr[i].getAttribute('data-piece')) === i) {
+          correct++;
+        }
+      }
+      document.getElementById('puzzle-progress').textContent = correct + '/16';
+      if (correct === 16) {
+        // Show notification
+        const notif = document.getElementById('puzzle-notif');
+        notif.style.display = 'block';
+        setTimeout(()=>{
+          notif.style.opacity = 0;
+          setTimeout(()=>{
+            window.location.href = 'data.html';
+          }, 900);
+        }, 2200);
+      }
+    }
+    // Intro overlay logic
+    const introOverlay = document.getElementById('intro-overlay');
+    const introText = document.getElementById('intro-text');
+    const mainWrapper = document.getElementById('main-wrapper');
+    mainWrapper.style.opacity = 0;
+    introText.style.opacity = 0;
+    setTimeout(()=>{
+      introText.style.opacity = 1;
+    }, 200);
+    setTimeout(()=>{
+      introText.style.opacity = 0;
+      setTimeout(()=>{
+        introOverlay.style.display = 'none';
+        mainWrapper.style.opacity = 1;
+        document.getElementById('puzzle-instruction').style.display = 'block';
+        // Show dino images
+        const dino7 = document.getElementById('dino7');
+        const dino8 = document.getElementById('dino8');
+        dino7.style.display = '';
+        dino8.style.display = '';
+        setTimeout(() => {
+          dino7.style.opacity = 1;
+          dino8.style.opacity = 1;
+        }, 30);
+        createPuzzle();
+      }, 1000);
+    }, 3200);
+    // Animate preview on hover
+    const previewImg = document.getElementById('preview-img');
+    previewImg.addEventListener('mouseenter', ()=>{
+      previewImg.style.transform = 'scale(1.08) rotate(-2deg)';
+    });
+    previewImg.addEventListener('mouseleave', ()=>{
+      previewImg.style.transform = '';
+    });
+
+    // Play and loop music khusus puzzle
+    window.addEventListener('DOMContentLoaded', function() {
+      var music = document.getElementById('puzzle-music');
+      if(music){
+        music.currentTime = 0;
+        music.play().catch(()=>{});
+        music.loop = true;
+      }
+    });
+  </script>
+  <audio id="puzzle-music" src="YouTube [NTa6Xbzfq1U].mp3" autoplay loop style="display:none"></audio>
+</body>
+</html>

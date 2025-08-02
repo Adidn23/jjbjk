@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Pesan Untuk Kamu</title>
+  <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@500;700&family=Montserrat:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
+    }
+    body {
+      width: 100vw; height: 100vh;
+      background: #f7f6f3;
+      position: relative;
+      font-family: 'Montserrat', 'Quicksand', Arial, sans-serif;
+    }
+    .bg-room {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.96;
+      pointer-events: none;
+      filter: brightness(0.98) blur(0.5px);
+      background: #f7f6f3;
+    }
+    .sidebar-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      z-index: 120;
+      width: 54px;
+      height: 54px;
+      background: rgba(255,255,255,0.82);
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #bfa76f33, 0 1.5px 0 #ffe0b2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .sidebar-btn:hover {
+      background: #ffe0b2;
+      box-shadow: 0 4px 24px #bfa76f55;
+    }
+    .sidebar-icon {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .sidebar-menu {
+      position: fixed;
+      top: 0; left: 0;
+      width: 290px;
+      height: 100vh;
+      background: rgba(255,255,255,0.97);
+      box-shadow: 4px 0 32px #bfa76f33;
+      z-index: 99;
+      transform: translateX(-100%);
+      transition: transform 0.38s cubic-bezier(.7,1.7,.5,1);
+      display: flex;
+      flex-direction: column;
+      padding: 48px 0 0 0;
+      font-family: 'Dancing Script', cursive;
+    }
+    .sidebar-menu.open {
+      transform: translateX(0);
+    }
+    .sidebar-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+    .sidebar-menu li {
+      font-size: 1.45rem;
+      color: #a67c3c;
+      padding: 18px 0 18px 38px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      border-left: 4px solid transparent;
+      transition: background 0.18s, border-color 0.18s;
+      user-select: none;
+    }
+    .sidebar-menu li:hover {
+      background: #fffbe7;
+      border-left: 4px solid #e75480;
+      color: #e75480;
+    }
+    .sidebar-menu .menu-emoji {
+      font-size: 1.7em;
+      margin-left: 8px;
+    }
+    .pesan-text-scroll {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%,-50%);
+      z-index: 10;
+      font-family: 'Montserrat', 'Quicksand', Arial, sans-serif;
+      font-size: 1.18rem;
+      color: #222;
+      text-align: center;
+      line-height: 1.8;
+      letter-spacing: 0.2px;
+      width: 90vw;
+      max-width: 900px;
+      max-height: 70vh;
+      background: rgba(255,255,255,0.82);
+      border-radius: 32px;
+      box-shadow: 0 4px 32px #bfa76f22;
+      padding: 38px 32px 38px 38px;
+      border: 2.5px solid #2196f3;
+      overflow-y: auto;
+      animation: fadeInText 1.5s cubic-bezier(.7,1.7,.5,1);
+      scrollbar-width: thin;
+      scrollbar-color: #e75480 #fffbe7;
+    }
+    .pesan-text-scroll b {
+      font-weight: 700;
+      color: #e75480;
+      letter-spacing: 1px;
+    }
+    .pesan-text-scroll::-webkit-scrollbar {
+      width: 8px;
+      background: #fffbe7;
+      border-radius: 8px;
+    }
+    .pesan-text-scroll::-webkit-scrollbar-thumb {
+      background: #e75480;
+      border-radius: 8px;
+    }
+    .icon-sun {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: 11;
+      display: block;
+      margin: 0;
+    }
+    .icon-love {
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      z-index: 11;
+      display: block;
+      margin: 0;
+    }
+    @keyframes fadeInText {
+      from { opacity: 0; transform: translate(-50%,-60%) scale(0.97); }
+      to { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    }
+    @media (max-width: 700px) {
+      .pesan-text-scroll { font-size: 0.98rem; width: 98vw; }
+    }
+  </style>
+</head>
+<body>
+  <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=1200&q=80" class="bg-room" alt="Minimalist Room Background">
+  <button class="sidebar-btn" id="sidebarBtn" title="Menu">
+    <svg class="sidebar-icon" viewBox="0 0 32 32" fill="none"><rect y="6" width="32" height="4" rx="2" fill="#e75480"/><rect y="14" width="32" height="4" rx="2" fill="#e75480"/><rect y="22" width="32" height="4" rx="2" fill="#e75480"/></svg>
+  </button>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <ul>
+      <li id="menuHome">Home <span class="menu-emoji">🏠</span></li>
+      <li id="menuAbout">About US <span class="menu-emoji">🤗</span></li>
+      <li id="menuPesan">Pesan untuk kamu <span class="menu-emoji">👉</span></li>
+      <li id="menuHarapan">Harapan aku <span class="menu-emoji">🧑‍❤️‍🧑</span></li>
+    </ul>
+  </div>
+  <div class="pesan-text-scroll">
+    <span class="icon-sun">
+      <!-- Shell SVG icon -->
+      <svg width="48" height="48" viewBox="0 0 48 48" fill="none"><path d="M24 42c-7.5 0-14-6.5-14-14 0-7.5 6.5-14 14-14s14 6.5 14 14c0 7.5-6.5 14-14 14z" fill="#ffe0b2"/><path d="M24 42c-7.5 0-14-6.5-14-14 0-2.5 0.7-4.8 1.8-6.8C14.5 28 18.7 34 24 34s9.5-6 12.2-12.8c1.1 2 1.8 4.3 1.8 6.8 0 7.5-6.5 14-14 14z" fill="#ffb300"/></svg>
+    </span>
+    Pesan aku buat kamuuu, jaga hati kamu buat aku yaa sayangg, kalau kamu mau ngelakuin apapun ingett ada aku, kalau suatu saat kamu sudah bekerja lalu ada yang nawarin nganter pulang, makan bareng dll ingett cwokmu disini apa apa sendiri<br><br>
+    Jaga pola makanmu, jangan ngemie terus, aku pun sama kayak kamu suka banget ngemie, cman karena dlu pernah sampe ke dokter aku jadi membatasi. dan juga kurangin yaa ngeyel nyaa aku saja nurut kalau kamu kasih tau masa kamu ngeyell<br><br>
+    Ingat semua janji dan komitmen kita yaaa, kita saling jaga hati masing masing, kita kasih usaha dan niat terbaik untuk satu sama lain, saling memberikan kebahagiaan satu sama lainn okeyyy<br><br>
+    <b>i  love youu.......</b>
+    <span class="icon-love">
+      <!-- Fish SVG icon -->
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><ellipse cx="30" cy="22" rx="12" ry="8" fill="#2196f3"/><ellipse cx="36.5" cy="22" rx="2.5" ry="2.5" fill="#fff"/><ellipse cx="37.5" cy="22" rx="1.2" ry="1.2" fill="#2196f3"/><path d="M18 22c-4 0-8 4-8 4s4-8 8-8" stroke="#1976d2" stroke-width="2" fill="none"/><polygon points="12,18 6,14 8,22" fill="#1976d2"/><polygon points="12,26 6,30 8,22" fill="#1976d2"/></svg>
+    </span>
+  </div>
+  <script>
+    // Sidebar logic like about.html
+    const sidebarMenu = document.getElementById('sidebarMenu');
+    const sidebarBtn = document.getElementById('sidebarBtn');
+    sidebarBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sidebarMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', function(e) {
+      if (sidebarMenu.classList.contains('open') && !sidebarMenu.contains(e.target) && e.target !== sidebarBtn) {
+        sidebarMenu.classList.remove('open');
+      }
+    });
+    // Sidebar menu navigation
+    document.getElementById('menuHome').addEventListener('click', function() {
+      window.location.href = 'data.html';
+    });
+    document.getElementById('menuAbout').addEventListener('click', function() {
+      window.location.href = 'about.html';
+    });
+    document.getElementById('menuPesan').addEventListener('click', function() {
+      window.location.href = 'pesan.html';
+    });
+    document.getElementById('menuHarapan').addEventListener('click', function() {
+      window.location.href = 'harapan.html';
+    });
+  </script>
+</body>
+<script>
+// music-elvis.js - persistent music for data, pesan, harapan, about
+(function(){
+    var allowed = ['data.html','pesan.html','harapan.html','about.html'];
+    var path = window.location.pathname.split('/').pop();
+    if(allowed.includes(path)) {
+        if(window.__elvisMusic) return;
+        var audio = document.createElement('audio');
+        audio.id = 'elvis-music';
+        audio.src = "Elvis Presley - Can't Help Falling In Love (Official Audio) [vGJTaP6anOU].mp3";
+        audio.loop = true;
+        audio.autoplay = true;
+        audio.style.display = 'none';
+        audio.controls = false;
+        try {
+            var lastTime = 0;
+            var lastUpdate = 0;
+            if(localStorage.getItem('elvisMusicTime')) lastTime = parseFloat(localStorage.getItem('elvisMusicTime')) || 0;
+            if(localStorage.getItem('elvisMusicTimeUpdate')) lastUpdate = parseInt(localStorage.getItem('elvisMusicTimeUpdate')) || 0;
+            var now = Date.now();
+            if(lastTime && lastUpdate && (now - lastUpdate < 2000)) {
+                audio.currentTime = lastTime;
+            }
+        }catch(e){}
+        audio.addEventListener('timeupdate', function(){
+            localStorage.setItem('elvisMusicTime', audio.currentTime);
+            localStorage.setItem('elvisMusicTimeUpdate', Date.now().toString());
+        });
+        audio.play();
+        document.body.appendChild(audio);
+        window.__elvisMusic = audio;
+    }
+})();
+</script>
+</body>
+</html>

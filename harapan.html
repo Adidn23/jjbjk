@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Harapan Aku</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&family=Quicksand:wght@500;700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
+    }
+    body {
+      width: 100vw; height: 100vh;
+      background: linear-gradient(120deg, #e0eafc 0%, #cfdef3 100%);
+      position: relative;
+      font-family: 'Montserrat', 'Quicksand', Arial, sans-serif;
+    }
+    .room-bg {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      opacity: 0.92;
+      pointer-events: none;
+      filter: blur(0.5px) brightness(1.04);
+    }
+    .pesan-text-scroll {
+      position: absolute;
+      left: 50%;
+      top: 54%;
+      transform: translate(-50%,-50%);
+      z-index: 10;
+      font-family: 'Montserrat', 'Quicksand', Arial, sans-serif;
+      font-size: 1.35rem;
+      color: #1a2340;
+      text-align: center;
+      line-height: 1.7;
+      letter-spacing: 0.5px;
+      width: 90vw;
+      max-width: 700px;
+      max-height: 70vh;
+      background: rgba(255,255,255,0.82);
+      border-radius: 32px;
+      box-shadow: 0 4px 32px #bfa76f22;
+      padding: 38px 32px 38px 38px;
+      border: 2.5px solid #3498db;
+      overflow-y: auto;
+      animation: fadeInText 1.5s cubic-bezier(.7,1.7,.5,1);
+      scrollbar-width: thin;
+      scrollbar-color: #3498db #e0eafc;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+    }
+    .icon-shell, .icon-fish {
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 8px;
+    }
+    .icon-shell {
+      margin-left: 0;
+    }
+    .icon-fish {
+      margin-right: 0;
+    }
+    .sidebar-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      z-index: 120;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 0;
+      margin: 0;
+    }
+    .sidebar-icon {
+      width: 32px;
+      height: 32px;
+    }
+    .sidebar-menu {
+      position: fixed;
+      top: 0; left: 0;
+      width: 290px;
+      height: 100vh;
+      background: rgba(255,255,255,0.97);
+      box-shadow: 4px 0 32px #bfa76f33;
+      z-index: 99;
+      transform: translateX(-100%);
+      transition: transform 0.38s cubic-bezier(.7,1.7,.5,1);
+      display: flex;
+      flex-direction: column;
+      padding: 48px 0 0 0;
+      font-family: 'Montserrat', 'Quicksand', Arial, sans-serif;
+    }
+    .sidebar-menu.open {
+      transform: translateX(0);
+    }
+    .sidebar-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+    .sidebar-menu li {
+      font-size: 1.25rem;
+      color: #1a2340;
+      padding: 18px 0 18px 38px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      border-left: 4px solid transparent;
+      transition: background 0.18s, border-color 0.18s;
+      user-select: none;
+    }
+    .sidebar-menu li:hover {
+      background: #e0eafc;
+      border-left: 4px solid #3498db;
+      color: #3498db;
+    }
+    .sidebar-menu .menu-emoji {
+      font-size: 1.7em;
+      margin-left: 8px;
+    }
+    @media (max-width: 700px) {
+      .pesan-text-scroll { font-size: 1.05rem; width: 98vw; }
+    }
+    @keyframes fadeInText {
+      from { opacity: 0; transform: translate(-50%,-50%) scale(0.97); }
+      to { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=1200&q=80" class="room-bg" alt="Room Background">
+  <button class="sidebar-btn" id="sidebarBtn" title="Menu">
+    <svg class="sidebar-icon" viewBox="0 0 32 32" fill="none"><rect y="6" width="32" height="4" rx="2" fill="#3498db"/><rect y="14" width="32" height="4" rx="2" fill="#3498db"/><rect y="22" width="32" height="4" rx="2" fill="#3498db"/></svg>
+  </button>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <ul>
+      <li id="menuHome">Home <span class="menu-emoji">🏠</span></li>
+      <li id="menuAbout">About US <span class="menu-emoji">🤗</span></li>
+      <li id="menuPesan">Pesan untuk kamu <span class="menu-emoji">👉</span></li>
+      <li id="menuHarapan">Harapan aku <span class="menu-emoji">🧑‍❤️‍🧑</span></li>
+    </ul>
+  </div>
+  <div class="pesan-text-scroll">
+    <span class="icon-shell">
+      <!-- Moon Icon -->
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none"><circle cx="22" cy="22" r="16" fill="#f7e9ff"/><path d="M32 22c0 7.18-5.82 13-13 13-2.7 0-5.2-0.82-7.28-2.22C17.5 32.5 26 25.5 26 16.5c0-2.7-0.82-5.2-2.22-7.28C29.18 11.8 32 16.5 32 22z" fill="#bfa6e0"/></svg>
+    </span>
+    <span style="flex:1;min-width:0;">
+      SINGKATTT SAJAAA........<br><br>
+      Aku mau kamu jadi istri aku dan aku jadi suami kamu kelakk<br><br>
+      <b>PAHAMM!!!!</b>
+    </span>
+    <span class="icon-fish">
+      <!-- Satellite Icon -->
+      <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
+        <circle cx="32" cy="12" r="5" fill="#bfa6e0" stroke="#7c6bb0" stroke-width="1.5"/>
+        <rect x="19" y="19" width="6" height="6" rx="1.5" fill="#bfa6e0" stroke="#7c6bb0" stroke-width="1.5"/>
+        <rect x="24.5" y="24.5" width="7" height="2" rx="1" transform="rotate(45 24.5 24.5)" fill="#bfa6e0" stroke="#7c6bb0" stroke-width="1.2"/>
+        <rect x="13.5" y="30.5" width="7" height="2" rx="1" transform="rotate(-45 13.5 30.5)" fill="#bfa6e0" stroke="#7c6bb0" stroke-width="1.2"/>
+        <circle cx="22" cy="22" r="2.5" fill="#7c6bb0"/>
+      </svg>
+    </span>
+  </div>
+  <script>
+    // Sidebar logic
+    const sidebarMenu = document.getElementById('sidebarMenu');
+    const sidebarBtn = document.getElementById('sidebarBtn');
+    sidebarBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sidebarMenu.classList.toggle('open');
+    });
+    document.addEventListener('click', function(e) {
+      if (sidebarMenu.classList.contains('open') && !sidebarMenu.contains(e.target) && e.target !== sidebarBtn) {
+        sidebarMenu.classList.remove('open');
+      }
+    });
+    // Sidebar menu navigation
+    document.getElementById('menuHome').addEventListener('click', function() {
+      window.location.href = 'data.html';
+    });
+    document.getElementById('menuAbout').addEventListener('click', function() {
+      window.location.href = 'about.html';
+    });
+    document.getElementById('menuPesan').addEventListener('click', function() {
+      window.location.href = 'pesan.html';
+    });
+    document.getElementById('menuHarapan').addEventListener('click', function() {
+      window.location.href = 'harapan.html';
+    });
+  </script>
+</body>
+<script>
+// music-elvis.js - persistent music for data, pesan, harapan, about
+(function(){
+    var allowed = ['data.html','pesan.html','harapan.html','about.html'];
+    var path = window.location.pathname.split('/').pop();
+    if(allowed.includes(path)) {
+        if(window.__elvisMusic) return;
+        var audio = document.createElement('audio');
+        audio.id = 'elvis-music';
+        audio.src = "Elvis Presley - Can't Help Falling In Love (Official Audio) [vGJTaP6anOU].mp3";
+        audio.loop = true;
+        audio.autoplay = true;
+        audio.style.display = 'none';
+        audio.controls = false;
+        try {
+            var lastTime = 0;
+            var lastUpdate = 0;
+            if(localStorage.getItem('elvisMusicTime')) lastTime = parseFloat(localStorage.getItem('elvisMusicTime')) || 0;
+            if(localStorage.getItem('elvisMusicTimeUpdate')) lastUpdate = parseInt(localStorage.getItem('elvisMusicTimeUpdate')) || 0;
+            var now = Date.now();
+            if(lastTime && lastUpdate && (now - lastUpdate < 2000)) {
+                audio.currentTime = lastTime;
+            }
+        }catch(e){}
+        audio.addEventListener('timeupdate', function(){
+            localStorage.setItem('elvisMusicTime', audio.currentTime);
+            localStorage.setItem('elvisMusicTimeUpdate', Date.now().toString());
+        });
+        audio.play();
+        document.body.appendChild(audio);
+        window.__elvisMusic = audio;
+    }
+})();
+</script>
+</body>
+</html>

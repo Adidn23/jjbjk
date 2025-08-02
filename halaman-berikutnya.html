@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kisah Kita</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #ffdde1 0%, #ee9ca7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .scene-container {
+            background: rgba(255,255,255,0.97);
+            border-radius: 18px;
+            box-shadow: 0 8px 32px rgba(255, 105, 135, 0.2);
+            padding: 36px 24px;
+            min-width: 340px;
+            min-height: 340px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .scene {
+            width: 220px;
+            height: 180px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+        .scene-text {
+            color: #e75480;
+            font-size: 1.2rem;
+            font-weight: 600;
+            text-align: center;
+            min-height: 32px;
+        }
+        @media (max-width: 500px) {
+            .scene-container { min-width: 90vw; padding: 18px 2vw; }
+            .scene { width: 140px; height: 110px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="scene-container">
+        <div class="scene" id="scene-svg"></div>
+        <div class="scene-text" id="scene-text"></div>
+    </div>
+    <script>
+        // SVGs for each scene
+        const scenes = [
+            {
+                svg: `<svg width="220" height="180" viewBox="0 0 220 180" fill="none">
+                    <ellipse cx="110" cy="170" rx="90" ry="10" fill="#ffe0ec"/>
+                    <!-- Pria -->
+                    <circle cx="70" cy="110" r="28" fill="#fcd5ce"/>
+                    <ellipse cx="70" cy="100" rx="10" ry="14" fill="#fff"/>
+                    <circle cx="70" cy="90" r="8" fill="#e75480"/>
+                    <rect x="60" y="124" width="20" height="28" rx="10" fill="#b0c4de"/>
+                    <!-- Wanita -->
+                    <circle cx="150" cy="110" r="28" fill="#ffb6b9"/>
+                    <ellipse cx="150" cy="100" rx="10" ry="14" fill="#fff"/>
+                    <circle cx="150" cy="90" r="8" fill="#e75480"/>
+                    <rect x="140" y="124" width="20" height="28" rx="10" fill="#f8bbd0"/>
+                    <!-- Buku -->
+                    <rect x="60" y="130" width="20" height="10" rx="2" fill="#fff" stroke="#e75480" stroke-width="2"/>
+                    <rect x="140" y="130" width="20" height="10" rx="2" fill="#fff" stroke="#e75480" stroke-width="2"/>
+                </svg>`,
+                text: 'Dua orang sedang membaca buku bersama.'
+            },
+            {
+                svg: `<svg width="220" height="180" viewBox="0 0 220 180" fill="none">
+                    <ellipse cx="110" cy="170" rx="90" ry="10" fill="#ffe0ec"/>
+                    <!-- Pria -->
+                    <circle cx="70" cy="110" r="28" fill="#fcd5ce"/>
+                    <ellipse cx="70" cy="100" rx="10" ry="14" fill="#fff"/>
+                    <circle cx="70" cy="90" r="8" fill="#e75480"/>
+                    <rect x="60" y="124" width="20" height="28" rx="10" fill="#b0c4de"/>
+                    <!-- Wanita -->
+                    <circle cx="150" cy="110" r="28" fill="#ffb6b9"/>
+                    <ellipse cx="150" cy="100" rx="10" ry="14" fill="#fff"/>
+                    <circle cx="150" cy="90" r="8" fill="#e75480"/>
+                    <rect x="140" y="124" width="20" height="28" rx="10" fill="#f8bbd0"/>
+                    <!-- Mulut berbicara -->
+                    <ellipse cx="70" cy="105" rx="4" ry="2" fill="#e75480"/>
+                    <ellipse cx="150" cy="105" rx="4" ry="2" fill="#e75480"/>
+                    <!-- Garis dialog -->
+                    <path d="M80 90 Q110 70 140 90" stroke="#e75480" stroke-width="2" fill="none"/>
+                </svg>`,
+                text: 'Mereka mulai berbincang dengan hangat.'
+            },
+            {
+                svg: `<svg width="220" height="180" viewBox="0 0 220 180" fill="none">
+                    <ellipse cx="110" cy="170" rx="90" ry="10" fill="#ffe0ec"/>
+                    <!-- Pria dan wanita berpelukan -->
+                    <ellipse cx="110" cy="120" rx="40" ry="45" fill="#fcd5ce"/>
+                    <ellipse cx="110" cy="120" rx="40" ry="45" fill="#ffb6b9" fill-opacity="0.4"/>
+                    <ellipse cx="110" cy="120" rx="20" ry="25" fill="#fff"/>
+                    <ellipse cx="110" cy="120" rx="8" ry="10" fill="#e75480"/>
+                    <ellipse cx="110" cy="120" rx="3" ry="4" fill="#fff"/>
+                    <!-- Tangan berpelukan -->
+                    <path d="M90 120 Q110 140 130 120" stroke="#e75480" stroke-width="3" fill="none"/>
+                </svg>`,
+                text: 'Kini mereka berpelukan penuh kasih.'
+            },
+            {
+                svg: `<svg width="220" height="180" viewBox="0 0 220 180" fill="none">
+                    <ellipse cx="110" cy="170" rx="90" ry="10" fill="#ffe0ec"/>
+                    <!-- Pria -->
+                    <ellipse cx="80" cy="120" rx="30" ry="35" fill="#fcd5ce"/>
+                    <circle cx="80" cy="110" r="12" fill="#e75480"/>
+                    <!-- Wanita -->
+                    <ellipse cx="140" cy="120" rx="30" ry="35" fill="#ffb6b9"/>
+                    <circle cx="140" cy="110" r="12" fill="#e75480"/>
+                    <!-- Meja makan -->
+                    <rect x="65" y="130" width="90" height="12" rx="6" fill="#fff" stroke="#e75480" stroke-width="2"/>
+                    <!-- Piring dan makanan -->
+                    <ellipse cx="90" cy="136" rx="8" ry="3" fill="#fff" stroke="#e75480" stroke-width="1"/>
+                    <ellipse cx="130" cy="136" rx="8" ry="3" fill="#fff" stroke="#e75480" stroke-width="1"/>
+                    <circle cx="90" cy="136" r="2" fill="#e75480"/>
+                    <circle cx="130" cy="136" r="2" fill="#e75480"/>
+                </svg>`,
+                text: 'Dan akhirnya mereka makan bersama.'
+            }
+        ];
+        let idx = 0;
+        const sceneSvg = document.getElementById('scene-svg');
+        const sceneText = document.getElementById('scene-text');
+        function showScene(i) {
+            sceneSvg.innerHTML = scenes[i].svg;
+            sceneText.textContent = scenes[i].text;
+        }
+        showScene(0);
+        setTimeout(()=>{ showScene(1); }, 2000);
+        setTimeout(()=>{ showScene(2); }, 4000);
+        setTimeout(()=>{ showScene(3); }, 6000);
+    </script>
+</body>
+</html>

@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Aku Kamu Dan Impian kita</title>
+  <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <style>
+    html, body {
+      margin: 0; padding: 0; width: 100vw; height: 100vh; overflow: hidden;
+    }
+    body {
+      width: 100vw; height: 100vh;
+      background: #222;
+    }
+    .bg-img {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      object-fit: cover;
+      z-index: 0;
+      filter: brightness(0.82);
+    }
+    .center-stack {
+      position: absolute;
+      left: 48%; top: 50%;
+      transform: translate(-50%,-50%);
+      z-index: 2;
+      user-select: none;
+      pointer-events: none;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      justify-content: center;
+      width: auto;
+    }
+    .stack-word {
+      font-family: 'Dancing Script', cursive;
+      font-size: 3.3rem;
+      color: #fffbe7;
+      text-shadow:
+        0 2px 16px #222,
+        0 1px 0 #bfa76f,
+        2px 4px 0 #bfa76f99,
+        0 8px 16px #0008,
+        0 0px 0 #fff,
+        0 0.5px 0 #fffbe7;
+      white-space: nowrap;
+      position: relative;
+      display: block;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      margin: 0;
+      padding: 0;
+      text-align: left;
+    }
+    .stack-word.kamu {
+      margin-left: 1.7em;
+      margin-top: -0.2em;
+    }
+    .stack-word.dan {
+      margin-left: 2.7em;
+      margin-top: -0.2em;
+    }
+    .stack-word.impian {
+      margin-left: 4.2em;
+      margin-top: -0.2em;
+    }
+    .stack-word.kita {
+      margin-left: 6.7em;
+      margin-top: -0.2em;
+    }
+    .sakura {
+      position: fixed;
+      top: 0; left: 0;
+      pointer-events: none;
+      z-index: 10;
+    }
+    .sidebar-btn {
+      position: fixed;
+      top: 28px;
+      left: 28px;
+      z-index: 120;
+      width: 54px;
+      height: 54px;
+      background: rgba(255,255,255,0.82);
+      border: none;
+      border-radius: 16px;
+      box-shadow: 0 2px 12px #bfa76f33, 0 1.5px 0 #ffe0b2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+    .sidebar-btn:hover {
+      background: #ffe0b2;
+      box-shadow: 0 4px 24px #bfa76f55;
+    }
+    .sidebar-icon {
+      width: 28px;
+      height: 28px;
+      display: block;
+    }
+    .sidebar-menu {
+      position: fixed;
+      top: 0; left: 0;
+      width: 290px;
+      height: 100vh;
+      background: rgba(255,255,255,0.97);
+      box-shadow: 4px 0 32px #bfa76f33;
+      z-index: 100;
+      transform: translateX(-100%);
+      transition: transform 0.38s cubic-bezier(.7,1.7,.5,1);
+      display: flex;
+      flex-direction: column;
+      padding: 48px 0 0 0;
+      font-family: 'Dancing Script', cursive;
+    }
+    .sidebar-menu.open {
+      transform: translateX(0);
+    }
+    .sidebar-menu ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      width: 100%;
+    }
+    .sidebar-menu li {
+      font-size: 1.45rem;
+      color: #a67c3c;
+      padding: 18px 0 18px 38px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      border-left: 4px solid transparent;
+      transition: background 0.18s, border-color 0.18s;
+      user-select: none;
+    }
+    .sidebar-menu li:hover {
+      background: #fffbe7;
+      border-left: 4px solid #e75480;
+      color: #e75480;
+    }
+    .sidebar-menu .menu-emoji {
+      font-size: 1.7em;
+      margin-right: 8px;
+    }
+    #floatingHearts {
+      position: fixed;
+      left: 0; top: 0;
+      width: 100vw; height: 100vh;
+      pointer-events: none;
+      z-index: 30;
+    }
+    .floating-heart {
+      position: absolute;
+      width: 32px; height: 32px;
+      opacity: 0.7;
+      animation: floatHeart 6s linear forwards;
+      filter: drop-shadow(0 2px 8px #e7548033) brightness(1.1);
+    }
+    @keyframes floatHeart {
+      0% { transform: translateY(0) scale(1) rotate(-8deg); opacity: 0.2; }
+      10% { opacity: 0.8; }
+      80% { opacity: 0.8; }
+      100% { transform: translateY(-120vh) scale(1.2) rotate(12deg); opacity: 0; }
+    }
+    .center-stack .stack-word {
+      filter: drop-shadow(0 2px 12px #e7548033) drop-shadow(0 0px 2px #fffbe7cc);
+      transition: filter 0.3s;
+    }
+    .center-stack .stack-word.animated {
+      animation: fadeInStack 0.8s cubic-bezier(.7,1.7,.5,1) forwards;
+    }
+    @keyframes fadeInStack {
+      from { opacity: 0; transform: translateY(40px) scale(0.95); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+  </style>
+</head>
+<body>
+  <img src="1678250128724.jpeg" class="bg-img" alt="bg">
+  <div class="center-stack" id="centerStack">
+    <span class="stack-word" style="opacity:0;transform:translateY(40px) scale(0.95);">Aku</span>
+    <span class="stack-word kamu" style="opacity:0;transform:translateY(40px) scale(0.95);">Kamu</span>
+    <span class="stack-word dan" style="opacity:0;transform:translateY(40px) scale(0.95);">Dan</span>
+    <span class="stack-word impian" style="opacity:0;transform:translateY(40px) scale(0.95);">Impian</span>
+    <span class="stack-word kita" style="opacity:0;transform:translateY(40px) scale(0.95);">kita</span>
+  </div>
+  <!-- Floating hearts -->
+  <div id="floatingHearts"></div>
+  <!-- Soft vignette overlay -->
+  <div style="pointer-events:none;position:fixed;z-index:200;left:0;top:0;width:100vw;height:100vh;background:radial-gradient(ellipse at center,rgba(255,255,255,0) 60%,rgba(34,34,34,0.18) 100%);"></div>
+  <button class="sidebar-btn" id="sidebarBtn" title="Menu" style="z-index:120;">
+    <svg class="sidebar-icon" viewBox="0 0 32 32" fill="none"><rect y="6" width="32" height="4" rx="2" fill="#e75480"/><rect y="14" width="32" height="4" rx="2" fill="#e75480"/><rect y="22" width="32" height="4" rx="2" fill="#e75480"/></svg>
+  </button>
+  <div class="sidebar-menu" id="sidebarMenu">
+    <ul>
+      <li>About US <span class="menu-emoji">🤗</span></li>
+      <li>Pesan untuk kamu <span class="menu-emoji">👉</span></li>
+      <li>Harapan aku <span class="menu-emoji">🧑‍❤️‍🧑</span></li>
+    </ul>
+  </div>
+  <canvas id="sakura-canvas" class="sakura"></canvas>
+  <script>
+    // Sakura animation
+    const canvas = document.getElementById('sakura-canvas');
+    let w = window.innerWidth, h = window.innerHeight;
+    canvas.width = w;
+    canvas.height = h;
+    function resize() {
+      w = window.innerWidth; h = window.innerHeight;
+      canvas.width = w; canvas.height = h;
+    }
+    window.addEventListener('resize', resize);
+    const ctx = canvas.getContext('2d');
+    const petalImg = new Image();
+    petalImg.src = 'https://pngimg.com/uploads/sakura/sakura_PNG17.png';
+    const petals = [];
+    function randomPetal() {
+      return {
+        x: Math.random() * w,
+        y: -40 - Math.random()*60,
+        r: 18 + Math.random()*12,
+        speed: 1.1 + Math.random()*1.2,
+        drift: 0.5 + Math.random()*1.2,
+        rot: Math.random()*2*Math.PI,
+        rotSpeed: (Math.random()-0.5)*0.03
+      };
+    }
+    for (let i=0; i<22; i++) petals.push(randomPetal());
+    function draw() {
+      ctx.clearRect(0,0,w,h);
+      for (let p of petals) {
+        ctx.save();
+        ctx.translate(p.x, p.y);
+        ctx.rotate(p.rot);
+        ctx.globalAlpha = 0.82;
+        ctx.drawImage(petalImg, -p.r/2, -p.r/2, p.r, p.r);
+        ctx.restore();
+        p.x += p.drift;
+        p.y += p.speed;
+        p.rot += p.rotSpeed;
+        if (p.x > w+40 || p.y > h+40) {
+          // respawn at random x along top, from left to right
+          p.x = Math.random()*w*0.7;
+          p.y = -40 - Math.random()*60;
+          p.r = 18 + Math.random()*12;
+          p.speed = 1.1 + Math.random()*1.2;
+          p.drift = 0.5 + Math.random()*1.2;
+          p.rot = Math.random()*2*Math.PI;
+          p.rotSpeed = (Math.random()-0.5)*0.03;
+        }
+      }
+      requestAnimationFrame(draw);
+    }
+    petalImg.onload = draw;
+
+    // Sidebar button click (can be customized for menu action)
+    const sidebarMenu = document.getElementById('sidebarMenu');
+    const sidebarBtn = document.getElementById('sidebarBtn');
+    sidebarBtn.addEventListener('click', function(e) {
+      e.stopPropagation();
+      sidebarMenu.classList.toggle('open');
+    });
+    // Optional: close sidebar on outside click
+    document.addEventListener('click', function(e) {
+      if (sidebarMenu.classList.contains('open') && !sidebarMenu.contains(e.target) && e.target !== sidebarBtn) {
+        sidebarMenu.classList.remove('open');
+      }
+    });
+    // Sidebar menu navigation
+    const menuItems = sidebarMenu.querySelectorAll('li');
+    menuItems[0].addEventListener('click', function() {
+      window.location.href = 'about.html';
+    });
+    menuItems[1].addEventListener('click', function() {
+      window.location.href = 'pesan.html';
+    });
+    menuItems[2].addEventListener('click', function() {
+      window.location.href = 'harapan.html';
+    });
+
+    // Animated text entrance for stack words
+    window.addEventListener('DOMContentLoaded', function() {
+      const words = document.querySelectorAll('#centerStack .stack-word');
+      words.forEach((el, i) => {
+        setTimeout(() => {
+          el.classList.add('animated');
+        }, 400 + i * 320);
+      });
+      // Floating hearts
+      const heartSVG = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M16 29s-9.5-7.6-13.5-12.1C1.2 14.1 0 11.7 0 9.1 0 4.2 4.2 0 9.1 0c2.6 0 5 1.2 6.6 3.1C17.9 1.2 20.3 0 22.9 0 27.8 0 32 4.2 32 9.1c0 2.6-1.2 5-4.5 7.8C25.5 21.4 16 29 16 29z" fill="#e75480"/></svg>`;
+      const floatingHearts = document.getElementById('floatingHearts');
+      function spawnHeart() {
+        const heart = document.createElement('div');
+        heart.className = 'floating-heart';
+        heart.innerHTML = heartSVG;
+        const left = 10 + Math.random() * 80;
+        heart.style.left = left + 'vw';
+        heart.style.bottom = '-40px';
+        heart.style.opacity = 0.5 + Math.random()*0.5;
+        heart.style.transform = `scale(${0.7 + Math.random()*0.7})`;
+        floatingHearts.appendChild(heart);
+        setTimeout(() => { heart.remove(); }, 6000);
+      }
+      setInterval(spawnHeart, 1200);
+    });
+  </script>
+</body>
+<script>
+// music-elvis.js - persistent music for data, pesan, harapan, about
+(function(){
+    // Only run if on data, pesan, harapan, about
+    var allowed = ['data.html','pesan.html','harapan.html','about.html'];
+    var path = window.location.pathname.split('/').pop();
+    if(allowed.includes(path)) {
+        if(window.__elvisMusic) return;
+        var audio = document.createElement('audio');
+        audio.id = 'elvis-music';
+        audio.src = "Elvis Presley - Can't Help Falling In Love (Official Audio) [vGJTaP6anOU].mp3";
+        audio.loop = true;
+        audio.autoplay = true;
+        audio.style.display = 'none';
+        audio.controls = false;
+        // Restore last time from localStorage if reload cepat (<2 detik)
+        try {
+            var lastTime = 0;
+            var lastUpdate = 0;
+            if(localStorage.getItem('elvisMusicTime')) lastTime = parseFloat(localStorage.getItem('elvisMusicTime')) || 0;
+            if(localStorage.getItem('elvisMusicTimeUpdate')) lastUpdate = parseInt(localStorage.getItem('elvisMusicTimeUpdate')) || 0;
+            var now = Date.now();
+            if(lastTime && lastUpdate && (now - lastUpdate < 2000)) {
+                audio.currentTime = lastTime;
+            }
+        }catch(e){}
+        audio.addEventListener('timeupdate', function(){
+            localStorage.setItem('elvisMusicTime', audio.currentTime);
+            localStorage.setItem('elvisMusicTimeUpdate', Date.now().toString());
+        });
+        audio.play();
+        document.body.appendChild(audio);
+        window.__elvisMusic = audio;
+    }
+})();
+</script>
+</body>
+</html>
